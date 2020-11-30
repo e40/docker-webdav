@@ -7,7 +7,14 @@ FROM httpd:alpine
 # Copy in our configuration files.
 COPY conf/ conf/
 
+# Install usermod
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories; \
+    apk --no-cache add shadow
+
 RUN set -ex; \
+    # Change default gid and uid for www-data to match my UID/GID
+    usermod  -u __UID__ www-data; \
+    groupmod -g __GID__ www-data; \
     # Create empty default DocumentRoot.
     mkdir -p "/var/www/html"; \
     # Create directories for Dav data and lock database.
